@@ -2,6 +2,7 @@
 
 This is the backend API for the Phonebook app from FullstackOpen Part 3.
 
-## Deployed Backend
+## Deployed Application
 
-https://phonebook-backend-4pj5.onrender.com/api/persons
+- **Frontend:** https://phonebook-backend-4pj5.onrender.com/
+- **API Endpoint:** https://phonebook-backend-4pj5.onrender.com/api/persons
