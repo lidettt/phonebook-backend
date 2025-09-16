@@ -4,6 +4,8 @@ const app = express();
 app.use(express.json());
 app.use(morgan("tiny"));
 app.use(express.static("dist"));
+require("dotenv").config();
+const Person = require("./models/person");
 let persons = [
   {
     id: "1",
@@ -36,6 +38,9 @@ app.use(
 );
 
 app.get("/api/persons", (request, response) => {
+  Person.find({}).then((persons) => {
+    response.json(persons);
+  });
   response.json(persons);
 });
 app.get("/api/persons/:id", (request, response) => {
@@ -63,15 +68,18 @@ app.post("/api/persons", (request, response) => {
       error: "number is missing",
     });
   }
-  newPerson.id = String(Math.floor(Math.random() * 10000));
-  const nameExist = persons.some((person) => person.name === newPerson.name);
-  if (nameExist) {
-    return response.status(400).json({
-      error: "name must be unique",
+  Person.findOne({ name: newPerson.name }).then((existingPerson) => {
+    if (existingPerson) {
+      return response.status(400).json({ error: "name must be unique" });
+    }
+    const person = new Person({
+      name: newPerson.name,
+      number: newPerson.number,
     });
-  }
-  persons = persons.concat(newPerson);
-  response.json(newPerson);
+    person.save().then((savedPerson) => {
+      response.json(savedPerson);
+    });
+  });
 });
 app.get("/info", (request, response) => {
   const count = persons.length;
